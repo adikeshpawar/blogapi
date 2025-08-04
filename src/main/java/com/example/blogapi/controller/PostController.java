@@ -36,6 +36,7 @@ public class PostController {
             @PathVariable Integer userId
     ) {
         PostDto createdPost = postService.createPost(postDto, userId);
+
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
@@ -46,6 +47,7 @@ public class PostController {
             @PathVariable Integer postId,
             @PathVariable Integer userId
     ) {
+
         PostDto updatedPost = postService.updatePost(postDto, postId, userId);
         return ResponseEntity.ok(updatedPost);
     }
@@ -106,5 +108,12 @@ public class PostController {
         StreamUtils.copy(resource,response.getOutputStream())   ;
 
     }
+    // Get All Posts by a Specific User
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable Integer userId) {
+        List<PostDto> posts = postService.getAllPostByUser(userId);
+        return ResponseEntity.ok(posts);
+    }
+
 
 }

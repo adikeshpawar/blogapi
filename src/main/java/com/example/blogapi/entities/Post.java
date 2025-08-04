@@ -25,7 +25,7 @@ public class Post {
     @Column(name = "post_title")
     private String postTitle;
 
-    @Column(name = "post_description")
+    @Column(name = "post_description",columnDefinition = "TEXT")
     private String postDescription;
     @ElementCollection
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
@@ -38,5 +38,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Category> categories;
 }

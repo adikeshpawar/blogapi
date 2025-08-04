@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface PostRepo extends JpaRepository<Post,Integer> {
 
     List<Post> findByPostTagsContaining(String tag);
+    List<Post> findByUser_Id(Integer userId);
 }

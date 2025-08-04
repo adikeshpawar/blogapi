@@ -1,10 +1,14 @@
 package com.example.blogapi.services.impl;
 
+import com.example.blogapi.dtos.CategoryDto;
 import com.example.blogapi.dtos.CommentDto;
 import com.example.blogapi.dtos.PostDto;
+import com.example.blogapi.entities.Category;
+import com.example.blogapi.entities.Comment;
 import com.example.blogapi.entities.Post;
 import com.example.blogapi.entities.User;
 import com.example.blogapi.exceptions.ResourceNotFoundException;
+import com.example.blogapi.repositories.CommentRepo;
 import com.example.blogapi.repositories.PostRepo;
 import com.example.blogapi.repositories.UserRepo;
 import com.example.blogapi.services.PostService;
@@ -28,6 +32,8 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private CommentRepo commentRepo;
     @Autowired
     private UserRepo userRepo;
 
@@ -61,7 +67,9 @@ public class PostServiceImpl implements PostService {
                         .collect(Collectors.toList());
 
         savedPostDto.setComments(commentDtos);
-
+        List<CategoryDto> categoryDtos = savedPost.getCategories() == null ? List.of():
+            savedPost.getCategories().stream().map(category -> modelMapper.map(category,CategoryDto.class)).collect(Collectors.toList())  ;
+            savedPostDto.setCategoryDto(categoryDtos);
         return savedPostDto;
     }
 
@@ -105,7 +113,18 @@ public class PostServiceImpl implements PostService {
     public PostDto getPostById(Integer postId) {
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "postId", postId));
-        return modelMapper.map(post, PostDto.class);
+
+        PostDto postDto = modelMapper.map(post, PostDto.class);
+
+        // Map comments manually
+        List<Comment> comments = commentRepo.findByPost(post);
+        List<CommentDto> commentDtos = comments.stream()
+                .map(comment -> modelMapper.map(comment, CommentDto.class))
+                .collect(Collectors.toList());
+
+        postDto.setComments(commentDtos);
+
+        return postDto;
     }
 
     @Override
@@ -115,6 +134,20 @@ public class PostServiceImpl implements PostService {
                 .map(post -> modelMapper.map(post, PostDto.class)) // map each to DTO
                 .collect(Collectors.toList()); // collect as list
     }
+
+    @Override
+    public List<PostDto> getAllPostByUser(Integer userId) {
+        List<Post> posts = this.postRepo.findByUser_Id(userId);
+
+        if (posts.isEmpty()) {
+            throw new ResourceNotFoundException("user", "userId", userId);
+        }
+
+        return posts.stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+    }
+
 
 
 }

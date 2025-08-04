@@ -14,5 +14,5 @@ public interface PostService {
     void deletePost(Integer postId,Integer userId);
     PostDto getPostById(Integer postId);
     List<PostDto> searchPostsByTag(String tag);
-
+    List<PostDto> getAllPostByUser(Integer userId);
 }

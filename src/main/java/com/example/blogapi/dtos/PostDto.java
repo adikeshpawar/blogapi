@@ -19,6 +19,6 @@ public class PostDto {
     private Integer userId;
     private String userName;
     private List<CommentDto> comments;
-
+    private List<CategoryDto> categoryDto;
 
 }

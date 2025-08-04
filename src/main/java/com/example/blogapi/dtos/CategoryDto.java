@@ -7,10 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoginDto {
-    private String email;
-    private String password;
-    private Integer id;
+@NoArgsConstructor
+
+public class CategoryDto {
+    private int categoryId;
+
+    private String categories;
+
+    private PostDto postDto;
 }
